@@ -1,0 +1,18 @@
+- hosts: hadoop_master
+  user: root
+  vars:
+    hadoop_dir: /my-hadoop-install
+  tasks:
+    - debug: var=ansible_default_ipv4.address
+    - name: copy hdfs-site.xml file from source to master node
+      copy: 
+        src: "./_hdfs-site-master.xml"
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/hdfs-site.xml"
+    - name: create mapred-site.xml for master node with respective IP address
+      template:
+        src: ./mapred-site-xml.j2
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/mapred-site.xml"
+    - name: create yarn-site.xml for master node with respective IP address
+      template:
+        src: ./yarn-site-xml.j2
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/yarn-site.xml"
