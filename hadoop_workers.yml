@@ -1,5 +1,7 @@
 - hosts: hadoop_workers
   user: root
+  vars:
+    hadoop_dir: /my-hadoop-install
   tasks:
     # - debug: var=ansible_default_ipv4.address
     - name: "create ssh directory"
@@ -14,3 +16,7 @@
         path: ~/.ssh/authorized_keys
         line: "{{ secrets.vars.rsa_pubkey_master }}"
         create: yes
+    - name: copy hdfs-site.xml file from source to each worker node
+      copy: 
+        src: "./_hdfs-site-worker.xml"
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/hdfs-site.xml"
