@@ -1,0 +1,16 @@
+- hosts: hadoop_workers
+  user: root
+  tasks:
+    # - debug: var=ansible_default_ipv4.address
+    - name: "create ssh directory"
+      file: path=~/.ssh state=directory
+    - name: Include vars of secrets.yaml into the 'secrets' variable.
+      include_vars: 
+        file: ./secrets.yml
+        name: secrets
+    # - debug: var=secrets.vars.rsa_pubkey_master
+    - name: "add master public key to authorized keys file"
+      lineinfile: 
+        path: ~/.ssh/authorized_keys
+        line: "{{ secrets.vars.rsa_pubkey_master }}"
+        create: yes

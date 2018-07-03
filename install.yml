@@ -1,0 +1,35 @@
+- hosts: hadoop_master, hadoop_workers
+  user: root
+  vars:
+    hadoop_dir: /my-hadoop-install
+    hadoop_tar: hadoop-3.0.3.tar.gz
+  tasks:
+    - name: update and install apt-get
+      apt:
+        upgrade: yes
+        update_cache: yes
+    - name: install java
+      apt: 
+        name: openjdk-8-jdk-headless
+    - name: Creates directory
+      file: path={{ hadoop_dir }} state=directory
+    - name: Download hadoop binary
+      get_url: url=http://mirror.cc.columbia.edu/pub/software/apache/hadoop/common/hadoop-3.0.3/{{ hadoop_tar }} dest={{ hadoop_dir }}/{{ hadoop_tar }}
+    - name: unarchive hadoop binary
+      unarchive: 
+        remote_src: yes
+        src: "{{ hadoop_dir }}/{{ hadoop_tar }}"
+        dest: "{{ hadoop_dir }}"
+    - name: copy hadoop-env.sh file from source to host
+      copy: 
+        src: "./_hadoop-env.sh"
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/hadoop-env.sh"
+    - name: source hadoop-env.sh file
+      shell: ". {{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/hadoop-env.sh"
+    - name: create hdfs data directory
+      file: path=/usr/local/hadoop/hdfs/data state=directory
+    - debug: var=ansible_default_ipv4.address
+    - name: create core-site.xml for each host with respective IP address
+      template:
+        src: ./core-site-xml.j2
+        dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/core-site.xml"
