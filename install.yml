@@ -1,9 +1,14 @@
 - hosts: hadoop_master, hadoop_workers
   user: root
+  gather_facts: no
+  pre_tasks:
+    - raw: (apt -y update && apt install -y python-minimal)
   vars:
     hadoop_dir: /my-hadoop-install
     hadoop_tar: hadoop-3.0.3.tar.gz
-  tasks:
+  tasks: 
+    - name: gather facts
+      setup:
     - name: update and install apt-get
       apt:
         upgrade: yes

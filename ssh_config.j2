@@ -1,0 +1,6 @@
+{% for host in groups['hadoop_master'] + groups['hadoop_workers'] %}
+  Host {{ hostvars[host].inventory_hostname }}
+    HostName {{ hostvars[host].inventory_hostname }}
+    User root
+    IdentityFile ~/.ssh/id_rsa
+{% endfor %}

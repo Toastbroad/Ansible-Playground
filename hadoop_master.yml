@@ -3,7 +3,11 @@
   vars:
     hadoop_dir: /my-hadoop-install
   tasks:
-    - debug: var=ansible_default_ipv4.address
+    # - debug: var=ansible_default_ipv4.address
+    - name: create ssh config file
+      template:
+        src:  ./ssh_config.j2
+        dest: ~/.ssh/config
     - name: copy hdfs-site.xml file from source to master node
       copy: 
         src: "./_hdfs-site-master.xml"
@@ -16,3 +20,25 @@
       template:
         src: ./yarn-site-xml.j2
         dest: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/yarn-site.xml"
+    - name: Include vars of secrets.yaml into the 'secrets' variable.
+      include_vars: 
+        file: ./secrets.yml
+        name: secrets
+    # - debug: var=secrets.vars.rsa_pubkey_master
+    - name: "add master public key to authorized keys file"
+      lineinfile: 
+        path: ~/.ssh/authorized_keys
+        line: "{{ secrets.vars.rsa_pubkey_master }}"
+        create: yes
+    - name: "add master ip(s) to hadoop master file"
+      lineinfile: 
+        path: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/masters"
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ groups['hadoop_master'] }}"
+    - name: loop over group of hadoop worker hosts and add their respective ip address to hadoop workers file
+      lineinfile: 
+        path: "{{ hadoop_dir }}/hadoop-3.0.3/etc/hadoop/workers"
+        line: "{{ item }}"
+        create: yes
+      loop: "{{ groups['hadoop_workers'] }}"

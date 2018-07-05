@@ -18,11 +18,23 @@
 
 <configuration>
   <property>
-        <name>mapreduce.jobtracker.address</name>
-        <value>{{ ansible_default_ipv4.address }}:54311</value>
-    </property>
-    <property>
-        <name>mapreduce.framework.name</name>
-        <value>yarn</value>
-    </property>
+    <name>mapreduce.jobtracker.address</name>
+    <value>{{ ansible_default_ipv4.address }}:54311</value>
+  </property>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME=/my-hadoop-install/hadoop-3.0.3</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME=/my-hadoop-install/hadoop-3.0.3</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME=/my-hadoop-install/hadoop-3.0.3</value>
+  </property>
 </configuration>
