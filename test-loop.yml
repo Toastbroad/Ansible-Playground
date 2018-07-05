@@ -1,0 +1,8 @@
+- hosts: localhost
+  user: root
+  tasks:
+    - name: loop over group of hadoop master + hadoop worker hosts and add their respective ip address to test-loop.txt
+      lineinfile: 
+        path: /Users/oliver.broad/funstuff/ansible/hadoop/test-loop.txt
+        line: "{{ item }}"
+      with_items: "{{ groups['hadoop_master'] + groups['hadoop_workers'] }}"
