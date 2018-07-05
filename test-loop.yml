@@ -5,4 +5,4 @@
       lineinfile: 
         path: /Users/oliver.broad/funstuff/ansible/hadoop/test-loop.txt
         line: "{{ item }}"
-      with_items: "{{ groups['hadoop_master'] + groups['hadoop_workers'] }}"
+      loop: "{{ groups['hadoop_master'] + groups['hadoop_workers'] }}"
